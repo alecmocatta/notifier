@@ -1,0 +1,41 @@
+[package]
+name = "notifier"
+version = "0.1.0"
+license = "Apache-2.0"
+authors = ["Alec Mocatta <alec@mocatta.net>"]
+categories = ["development-tools","network-programming"]
+keywords = ["poll","epoll","kqueue","socket"]
+description = """
+A wrapper around platform event notification APIs that can also handle high-resolution timer events, including those set (on another thread) during a `notifier.wait()` call.
+"""
+repository = "https://github.com/alecmocatta/notifier"
+homepage = "https://github.com/alecmocatta/notifier"
+documentation = "https://docs.rs/notifier/0.1.0"
+readme = "README.md"
+
+[badges]
+#appveyor = { repository = "alecmocatta/notifier" }
+circle-ci = { repository = "alecmocatta/notifier" }
+#gitlab = { repository = "alecmocatta/notifier" }
+travis-ci = { repository = "alecmocatta/notifier" }
+
+maintenance = { status = "actively-developed" }
+
+[dependencies]
+palaver = {git = "https://github.com/alecmocatta/palaver"}
+log = "0.4"
+mio = "0.6"
+either = "1.5"
+tcp_typed = {git = "https://github.com/alecmocatta/tcp_typed", optional = true}
+
+[target.'cfg(any(target_os = "android", target_os = "linux"))'.dependencies]
+nix = "0.11"
+
+[package.metadata.docs.rs]
+features = ["tcp_typed"]
+
+[replace]
+"libc:0.2.42" = {git = "https://github.com/rust-lang/libc"}
+
+# [target.'cfg(windows)'.dependencies]
+# winapi = "0.3"
