@@ -57,13 +57,13 @@ script: |
       export RUSTFLAGS
       for TARGET in $BUILD $RUN; do (
         [ \( "$TRAVIS_OS_NAME" = "osx" -o \( "$TRAVIS_OS_NAME" = "linux" -a "${DIST-}" = "precise" \) \) -a \( "$TARGET" = "x86_64-unknown-linux-musl" -o "$TARGET" = "i686-unknown-linux-musl" \) ] && RUSTFLAGS="$RUSTFLAGS -C linker=rust-lld -Z linker-flavor=ld.lld"
-        cargo build --verbose --target "$TARGET" --lib --tests
-        cargo build --verbose --target "$TARGET" --lib --tests --release
+        cargo build --verbose --target "$TARGET" --lib --tests --all-features
+        cargo build --verbose --target "$TARGET" --lib --tests --all-features --release
       ); done
       for TARGET in $RUN; do (
         [ \( "$TRAVIS_OS_NAME" = "osx" -o \( "$TRAVIS_OS_NAME" = "linux" -a "${DIST-}" = "precise" \) \) -a \( "$TARGET" = "x86_64-unknown-linux-musl" -o "$TARGET" = "i686-unknown-linux-musl" \) ] && RUSTFLAGS="$RUSTFLAGS -C linker=rust-lld -Z linker-flavor=ld.lld"
-        RUST_BACKTRACE=full cargo test --target "$TARGET"
-        RUST_BACKTRACE=full cargo test --target "$TARGET" --release
+        RUST_BACKTRACE=full cargo test --target "$TARGET" --all-features
+        RUST_BACKTRACE=full cargo test --target "$TARGET" --all-features --release
       ); done
     ); done; IFS=$OLD_IFS
     for TARGET in $BUILD $RUN; do

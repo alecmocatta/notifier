@@ -5,7 +5,7 @@
 [![Build Status](https://circleci.com/gh/alecmocatta/notifier/tree/master.svg?style=shield)](https://circleci.com/gh/alecmocatta/notifier)
 [![Build Status](https://travis-ci.com/alecmocatta/notifier.svg?branch=master)](https://travis-ci.com/alecmocatta/notifier)
 
-[Docs](https://docs.rs/crate/notifier/0.1.0)
+[Docs](https://docs.rs/notifier/0.1.0)
 
 A wrapper around platform event notification APIs (currently via [mio](https://github.com/carllerche/mio)) that can also handle high-resolution timer events, including those set (on another thread) *during* a `notifier.wait()` call.
 

@@ -22,20 +22,17 @@ travis-ci = { repository = "alecmocatta/notifier" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-palaver = {git = "https://github.com/alecmocatta/palaver"}
+palaver = "0.1"
 log = "0.4"
 mio = "0.6"
 either = "1.5"
-tcp_typed = {git = "https://github.com/alecmocatta/tcp_typed", optional = true}
+tcp_typed = {version = "0.1", optional = true}
 
 [target.'cfg(any(target_os = "android", target_os = "linux"))'.dependencies]
 nix = "0.11"
 
 [package.metadata.docs.rs]
 features = ["tcp_typed"]
-
-[replace]
-"libc:0.2.42" = {git = "https://github.com/rust-lang/libc"}
 
 # [target.'cfg(windows)'.dependencies]
 # winapi = "0.3"
