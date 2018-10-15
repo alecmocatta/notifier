@@ -22,17 +22,17 @@ travis-ci = { repository = "alecmocatta/notifier" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-palaver = "0.1"
 log = "0.4"
 mio = "0.6"
 either = "1.5"
-tcp_typed = {version = "0.1", optional = true}
+palaver = { version = "0.1" } #, path = "../palaver" }
+tcp_typed = { version = "0.1", optional = true } #, path = "../tcp_typed" }
 
-[target.'cfg(any(target_os = "android", target_os = "linux"))'.dependencies]
+[target.'cfg(unix)'.dependencies]
 nix = "0.11"
 
-[package.metadata.docs.rs]
-features = ["tcp_typed"]
+[target.'cfg(windows)'.dependencies]
+winapi = "0.3"
 
-# [target.'cfg(windows)'.dependencies]
-# winapi = "0.3"
+[package.metadata.docs.rs]
+features = [ "tcp_typed" ]
