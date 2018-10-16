@@ -1,4 +1,4 @@
-#![cfg_attr(feature = "cargo-clippy", allow(module_inception, option_option, cast_sign_loss, cast_possible_truncation, cast_possible_wrap, cast_lossless))]
+#![allow(clippy::module_inception, clippy::option_option, clippy::cast_sign_loss, clippy::cast_possible_truncation, clippy::cast_possible_wrap, clippy::cast_lossless)]
 
 #[cfg(any(target_os = "android", target_os = "linux"))]
 mod timer {

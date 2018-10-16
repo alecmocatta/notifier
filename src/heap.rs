@@ -1,6 +1,6 @@
 // https://github.com/alexcrichton/futures-timer/blob/1d438ec7b5dd41f8727dac1974c0f4cf1c397f5a/src/heap.rs
 #![allow(unused_results)]
-#![cfg_attr(feature = "cargo-clippy", allow(needless_return, similar_names, use_self, len_zero, explicit_iter_loop))]
+#![allow(clippy::needless_return, clippy::similar_names, clippy::use_self, clippy::len_zero,clippy::explicit_iter_loop)]
 
 //! A simple binary heap with support for removal of arbitrary elements
 //!
@@ -176,7 +176,8 @@ impl<T: Ord> Heap<T> {
 				.filter(|slot| match **slot {
 					SlabSlot::Full { .. } => true,
 					SlabSlot::Empty { .. } => false,
-				}).count()
+				})
+				.count()
 		);
 
 		for (i, &(_, j)) in self.items.iter().enumerate() {

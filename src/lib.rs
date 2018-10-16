@@ -20,16 +20,13 @@
 	unused_import_braces,
 	unused_qualifications,
 	unused_results,
+	clippy::pedantic
 )] // from https://github.com/rust-unofficial/patterns/blob/master/anti_patterns/deny-warnings.md
-#![cfg_attr(feature = "cargo-clippy", warn(clippy_pedantic))]
-#![cfg_attr(
-	feature = "cargo-clippy",
-	allow(
-		new_without_default,
-		indexing_slicing,
-		needless_pass_by_value,
-		inline_always
-	)
+#![allow(
+	clippy::new_without_default,
+	clippy::indexing_slicing,
+	clippy::needless_pass_by_value,
+	clippy::inline_always
 )]
 
 extern crate either;
@@ -296,7 +293,8 @@ where
 			POLL_TIMER,
 			mio::Ready::readable(),
 			mio::PollOpt::edge(),
-		).unwrap();
+		)
+		.unwrap();
 		Self {
 			poll,
 			timer,
@@ -350,7 +348,8 @@ where
 						} else {
 							None
 						},
-					).unwrap();
+					)
+					.unwrap();
 				trace!("/mio_wait: {:?}", n);
 				if !nonblock && n == 0 {
 					continue;
