@@ -29,7 +29,7 @@ palaver = { version = "0.1" } #, path = "../palaver" }
 tcp_typed = { version = "0.1", optional = true } #, path = "../tcp_typed" }
 
 [target.'cfg(unix)'.dependencies]
-nix = "0.11"
+nix = "0.14"
 
 [target.'cfg(windows)'.dependencies]
 winapi = "0.3"
