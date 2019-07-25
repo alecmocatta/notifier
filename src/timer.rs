@@ -32,7 +32,7 @@ mod timer {
 							tv_nsec: timeout.subsec_nanos() as libc::time_t,
 						},
 					},
-					ptr::null_mut() as *mut libc::itimerspec,
+					ptr::null_mut(),
 				)
 			};
 			assert_eq!(err, 0);
@@ -89,7 +89,12 @@ mod timer {
 
 		fn publicise(&self) -> &Self::Public {
 			// TODO: remove this heinous hack
-			let ret = unsafe { &*(self as *const Self as *const Self::Public) };
+			let ret = unsafe {
+				&*({
+					let ret: *const Self = self;
+					ret
+				} as *const Self::Public)
+			};
 			assert_eq!(format!("{:?}", self), format!("{:?}", ret));
 			ret
 		}
@@ -117,7 +122,6 @@ mod timer {
 mod timer {
 	// alternative approach: https://github.com/jiixyj/epoll-shim/blob/master/src/timerfd.c
 	use mio;
-	use palaver::spawn;
 	use std::{io, sync, thread, time};
 	pub struct Timer {
 		inner: sync::Arc<Inner>,
@@ -137,28 +141,31 @@ mod timer {
 			});
 			let inner_ = inner.clone();
 			let (registration, set_readiness) = mio::Registration::new2();
-			let thread = spawn(String::from("deploy-timer"), move || {
-				let inner = inner_;
-				loop {
-					let mut timeout_lock = inner.timeout.lock().unwrap();
-					if timeout_lock.is_none() {
-						break;
+			let thread = thread::Builder::new()
+				.name(String::from("notifier-timer"))
+				.spawn(move || {
+					let inner = inner_;
+					loop {
+						let mut timeout_lock = inner.timeout.lock().unwrap();
+						if timeout_lock.is_none() {
+							break;
+						}
+						let now = time::Instant::now();
+						if timeout_lock.as_ref().unwrap().is_none() {
+							drop(timeout_lock);
+							thread::park();
+						} else if now < *timeout_lock.as_ref().unwrap().as_ref().unwrap() {
+							let sleep = *timeout_lock.as_ref().unwrap().as_ref().unwrap() - now;
+							drop(timeout_lock);
+							thread::park_timeout(sleep);
+						} else {
+							*timeout_lock = Some(None);
+							inner.elapsed.store(true, sync::atomic::Ordering::Relaxed);
+							set_readiness.set_readiness(mio::Ready::readable()).unwrap();
+						}
 					}
-					let now = time::Instant::now();
-					if timeout_lock.as_ref().unwrap().is_none() {
-						drop(timeout_lock);
-						thread::park();
-					} else if now < *timeout_lock.as_ref().unwrap().as_ref().unwrap() {
-						let sleep = *timeout_lock.as_ref().unwrap().as_ref().unwrap() - now;
-						drop(timeout_lock);
-						thread::park_timeout(sleep);
-					} else {
-						*timeout_lock = Some(None);
-						inner.elapsed.store(true, sync::atomic::Ordering::Relaxed);
-						set_readiness.set_readiness(mio::Ready::readable()).unwrap();
-					}
-				}
-			});
+				})
+				.unwrap();
 			Self {
 				inner,
 				thread: Some(thread),
