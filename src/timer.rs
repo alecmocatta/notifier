@@ -142,7 +142,7 @@ mod timer {
 			let inner_ = inner.clone();
 			let (registration, set_readiness) = mio::Registration::new2();
 			let thread = thread::Builder::new()
-				.name(String::from("deploy-timer"))
+				.name(String::from("notifier-timer"))
 				.spawn(move || {
 					let inner = inner_;
 					loop {
