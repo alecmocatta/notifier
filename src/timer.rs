@@ -32,7 +32,7 @@ mod timer {
 							tv_nsec: timeout.subsec_nanos() as libc::time_t,
 						},
 					},
-					ptr::null_mut() as *mut libc::itimerspec,
+					ptr::null_mut(),
 				)
 			};
 			assert_eq!(err, 0);
@@ -89,7 +89,12 @@ mod timer {
 
 		fn publicise(&self) -> &Self::Public {
 			// TODO: remove this heinous hack
-			let ret = unsafe { &*(self as *const Self as *const Self::Public) };
+			let ret = unsafe {
+				&*({
+					let ret: *const Self = self;
+					ret
+				} as *const Self::Public)
+			};
 			assert_eq!(format!("{:?}", self), format!("{:?}", ret));
 			ret
 		}
