@@ -22,7 +22,7 @@ maintenance = { status = "actively-developed" }
 log = "0.4"
 mio = "0.6"
 either = "1.5"
-palaver = { version = "0.1" } #, path = "../palaver" }
+palaver = { version = "0.2" } #, path = "../palaver" }
 tcp_typed = { version = "0.1", optional = true } #, path = "../tcp_typed" }
 
 [target.'cfg(unix)'.dependencies]
