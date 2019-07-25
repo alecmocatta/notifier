@@ -1,7 +1,7 @@
 [package]
 name = "notifier"
 version = "0.1.0"
-license = "Apache-2.0"
+license = "MIT OR Apache-2.0"
 authors = ["Alec Mocatta <alec@mocatta.net>"]
 categories = ["development-tools","network-programming"]
 keywords = ["poll","epoll","kqueue","socket"]
@@ -12,13 +12,10 @@ repository = "https://github.com/alecmocatta/notifier"
 homepage = "https://github.com/alecmocatta/notifier"
 documentation = "https://docs.rs/notifier/0.1.0"
 readme = "README.md"
+edition = "2018"
 
 [badges]
-#appveyor = { repository = "alecmocatta/notifier" }
-circle-ci = { repository = "alecmocatta/notifier" }
-#gitlab = { repository = "alecmocatta/notifier" }
-travis-ci = { repository = "alecmocatta/notifier" }
-
+azure-devops = { project = "alecmocatta/notifier", pipeline = "tests" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]

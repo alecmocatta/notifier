@@ -15,8 +15,8 @@
 	// missing_copy_implementations,
 	// missing_debug_implementations,
 	// missing_docs,
+	trivial_casts,
 	trivial_numeric_casts,
-	unused_extern_crates,
 	unused_import_braces,
 	unused_qualifications,
 	unused_results,
@@ -29,18 +29,20 @@
 	clippy::inline_always
 )]
 
-extern crate either;
-extern crate mio;
-#[cfg(any(target_os = "android", target_os = "linux"))]
-extern crate nix;
-#[cfg(not(any(target_os = "android", target_os = "linux")))]
-extern crate palaver;
-#[cfg(feature = "tcp_typed")]
-extern crate tcp_typed;
-// #[cfg(windows)]
-// extern crate winapi;
-#[macro_use]
-extern crate log;
+// extern crate either;
+// extern crate mio;
+// #[cfg(any(target_os = "android", target_os = "linux"))]
+// extern crate nix;
+// #[cfg(not(any(target_os = "android", target_os = "linux")))]
+// extern crate palaver;
+// #[cfg(feature = "tcp_typed")]
+// extern crate tcp_typed;
+// // #[cfg(windows)]
+// // extern crate winapi;
+// #[macro_use]
+// extern crate log;
+
+use log::trace;
 
 mod heap;
 mod timer;
