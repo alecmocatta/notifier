@@ -1,7 +1,7 @@
 # notifier
 
-[![Crates.io](https://img.shields.io/crates/v/notifier.svg?style=flat-square&maxAge=86400)](https://crates.io/crates/notifier)
-[![MIT / Apache 2.0 licensed](https://img.shields.io/crates/l/notifier.svg?style=flat-square&maxAge=2592000)](#License)
+[![Crates.io](https://img.shields.io/crates/v/notifier.svg?maxAge=86400)](https://crates.io/crates/notifier)
+[![MIT / Apache 2.0 licensed](https://img.shields.io/crates/l/notifier.svg?maxAge=2592000)](#License)
 [![Build Status](https://dev.azure.com/alecmocatta/notifier/_apis/build/status/tests?branchName=master)](https://dev.azure.com/alecmocatta/notifier/_build/latest?branchName=master)
 
 [Docs](https://docs.rs/notifier/0.1.0)
