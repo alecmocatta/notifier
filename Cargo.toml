@@ -1,6 +1,6 @@
 [package]
 name = "notifier"
-version = "0.1.2"
+version = "0.1.3"
 license = "MIT OR Apache-2.0"
 authors = ["Alec Mocatta <alec@mocatta.net>"]
 categories = ["development-tools","network-programming"]
@@ -10,7 +10,7 @@ A wrapper around platform event notification APIs that can also handle high-reso
 """
 repository = "https://github.com/alecmocatta/notifier"
 homepage = "https://github.com/alecmocatta/notifier"
-documentation = "https://docs.rs/notifier/0.1.1"
+documentation = "https://docs.rs/notifier/0.1.3"
 readme = "README.md"
 edition = "2018"
 

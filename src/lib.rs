@@ -10,7 +10,7 @@
 //!
 //! Currently doesn't support Windows.
 
-#![doc(html_root_url = "https://docs.rs/notifier/0.1.1")]
+#![doc(html_root_url = "https://docs.rs/notifier/0.1.3")]
 #![warn(
 	// missing_copy_implementations,
 	// missing_debug_implementations,
@@ -34,7 +34,7 @@ mod timer;
 
 use either::Either;
 use log::trace;
-use std::{cmp, collections::HashSet, marker, mem, sync, time};
+use std::{cmp, collections::HashSet, hash::Hash, marker, mem, sync, time};
 
 #[cfg(unix)]
 type Fd = std::os::unix::io::RawFd;
@@ -43,7 +43,7 @@ type Fd = std::os::windows::io::RawHandle;
 
 pub struct NotifierContext<'a, Key: 'a>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	executor: &'a Notifier<Key>,
@@ -51,7 +51,7 @@ where
 }
 impl<'a, Key: 'a> NotifierContext<'a, Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	#[inline(always)]
@@ -60,7 +60,7 @@ where
 	}
 	#[inline(always)]
 	pub fn queue(&self) {
-		let _ = self.add_instant(time::Instant::now());
+		self.executor.queue(self.key.clone())
 	}
 	#[inline(always)]
 	pub fn add_fd(&self, fd: Fd) {
@@ -83,7 +83,7 @@ where
 #[cfg(feature = "tcp_typed")]
 impl<'a, Key: 'a> tcp_typed::Notifier for NotifierContext<'a, Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	type InstantSlot = heap::Slot;
@@ -131,22 +131,22 @@ impl<Key> Ord for TimeEvent<Key> {
 }
 pub struct Notifier<Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	notifier_timeout: NotifierTimeout<Key>,
-	// queue: Vec<Key>,
+	queue: sync::RwLock<HashSet<Key>>,
 	timer: sync::RwLock<heap::Heap<TimeEvent<Key>>>,
 }
 impl<Key> Notifier<Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	pub fn new() -> Self {
 		Self {
 			notifier_timeout: NotifierTimeout::new(),
-			// queue: Vec::new(),
+			queue: sync::RwLock::new(HashSet::new()),
 			timer: sync::RwLock::new(heap::Heap::new()),
 		}
 	}
@@ -156,6 +156,11 @@ where
 			executor: self,
 			key,
 		}
+	}
+
+	fn queue(&self, data: Key) {
+		let _ = self.queue.write().unwrap().insert(data);
+		self.notifier_timeout.update_timeout(time::Instant::now());
 	}
 
 	fn add_fd(&self, fd: Fd, data: Key) {
@@ -218,6 +223,7 @@ where
 			}
 			self.timer.read().unwrap().peek().map(|x| x.0)
 		};
+		let done_any = done_any || !self.queue.read().unwrap().is_empty();
 		trace!("\\wait {:?}", timeout);
 		if let Some(timeout) = timeout {
 			self.notifier_timeout.update_timeout(timeout);
@@ -226,6 +232,10 @@ where
 			.wait(done_any, |flags, poll_key| f(Either::Left(flags), poll_key));
 		trace!("/wait");
 		let now = time::Instant::now();
+		let queue = mem::replace(&mut *self.queue.write().unwrap(), HashSet::new());
+		for poll_key in queue {
+			f(Either::Right(now), poll_key)
+		}
 		loop {
 			let TimeEvent(timeout, poll_key) = {
 				let timer = &mut *self.timer.write().unwrap();
@@ -259,7 +269,7 @@ const POLL_TIMER: mio::Token = mio::Token(usize::max_value() - 1); // max_value(
 
 struct NotifierTimeout<Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	poll: mio::Poll,
@@ -270,7 +280,7 @@ where
 }
 impl<Key> NotifierTimeout<Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	fn new() -> Self {
@@ -365,7 +375,7 @@ where
 }
 impl<Key> Drop for NotifierTimeout<Key>
 where
-	Key: Clone + Into<usize>,
+	Key: Clone + Eq + Hash + Into<usize>,
 	usize: Into<Key>,
 {
 	fn drop(&mut self) {

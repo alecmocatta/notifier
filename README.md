@@ -4,7 +4,7 @@
 [![MIT / Apache 2.0 licensed](https://img.shields.io/crates/l/notifier.svg?maxAge=2592000)](#License)
 [![Build Status](https://dev.azure.com/alecmocatta/notifier/_apis/build/status/tests?branchName=master)](https://dev.azure.com/alecmocatta/notifier/_build/latest?branchName=master)
 
-[Docs](https://docs.rs/notifier/0.1.1)
+[Docs](https://docs.rs/notifier/0.1.3)
 
 A wrapper around platform event notification APIs (currently via [mio](https://github.com/carllerche/mio)) that can also handle high-resolution timer events, including those set (on another thread) *during* a `notifier.wait()` call.
 
