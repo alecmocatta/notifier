@@ -116,8 +116,8 @@ mod timer {
 			self.publicise().t.t.tv_nsec as u32
 		}
 	}
-
 }
+
 #[cfg(not(any(target_os = "android", target_os = "linux")))]
 mod timer {
 	// alternative approach: https://github.com/jiixyj/epoll-shim/blob/master/src/timerfd.c
@@ -221,4 +221,5 @@ mod timer {
 		}
 	}
 }
+
 pub use self::timer::Timer;
