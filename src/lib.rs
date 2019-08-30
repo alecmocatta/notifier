@@ -10,7 +10,7 @@
 //!
 //! Currently doesn't support Windows.
 
-#![doc(html_root_url = "https://docs.rs/notifier/0.1.1")]
+#![doc(html_root_url = "https://docs.rs/notifier/0.1.3")]
 #![warn(
 	// missing_copy_implementations,
 	// missing_debug_implementations,
